@@ -1,0 +1,28 @@
+#!/bin/bash
+# Job name:
+#SBATCH --job-name=faceageTest
+#
+# Wall time (e.g. "minutes", "hours:minutes:seconds", "days-hours", "days-hours:minutes"):
+#SBATCH --time=00:10:00
+#
+# Mail type:
+#SBATCH --mail-type=ALL
+#
+# Mail user:
+#SBATCH --mail-user=unnithan@msu.edu
+#
+# CPU Memory:
+#SBATCH --mem-per-cpu=16G
+#
+# GPUs:
+#SBATCH --gpus=v100:1
+#
+# Standard out and error:
+#SBATCH --output=%x-%j.SLURMout
+
+
+echo "JobID: $SLURM_JOB_ID"
+echo "Running on node: `hostname`"
+
+conda activate pytorch
+python train.py --datafrac 0.1 --epochs 5 > testout.txt
