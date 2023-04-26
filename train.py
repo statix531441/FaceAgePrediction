@@ -79,7 +79,7 @@ with open(os.path.join(checkpoints_folder, 'train_args.txt'), 'w') as f:
 for epoch in range(start_epoch, start_epoch+args.epochs):
     train_acc = 0
     test_acc = 0
-
+    epoch_loss = 0
     model.train()
     for batch_idx, (X, y, age_cat) in tqdm(enumerate(train_loader), total=len(train_loader), ascii=True, desc=f"Epoch {epoch}"):
         # print(f"batch {batch_idx}", end=': ')
@@ -95,11 +95,14 @@ for epoch in range(start_epoch, start_epoch+args.epochs):
 
         loss = loss.to('cpu').item() # transfer to cpu and extract value before appending
         # print(f"loss: {loss}")
-        history['loss'].append(loss) 
+        epoch_loss += loss
         
         # Training accuracy
         train_acc += (oh.argmax(dim=1) == y.argmax(dim=1)).float().sum()
-        
+    
+    print(f"Loss: {epoch_loss}", end=", ")
+    history['loss'].append(epoch_loss/len(train_loader)) 
+
     train_acc /= len(train_loader.dataset)
     train_acc = train_acc.to('cpu').item() # transfer to cpu and extract value before appending
     print(f"train_acc: {train_acc}", end=", ")
