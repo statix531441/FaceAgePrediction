@@ -24,5 +24,4 @@
 echo "JobID: $SLURM_JOB_ID"
 echo "Running on node: `hostname`"
 
-conda activate pytorch
 python train.py --name dnet121 --feature_extractor dnet121 > jobs/dnet121.out
