@@ -1,6 +1,6 @@
 #!/bin/bash
 # Job name:
-#SBATCH --job-name=dnet169-pt-fx
+#SBATCH --job-name=dnet169
 #
 # Wall time (e.g. "minutes", "hours:minutes:seconds", "days-hours", "days-hours:minutes"):
 #SBATCH --time=04:00:00
@@ -18,11 +18,11 @@
 #SBATCH --gpus=v100:1
 #
 # Standard out and error:
-#SBATCH --output=%x-%j.SLURMout
+#SBATCH --output=jobs/dnet169.SLURMout
 
 
 echo "JobID: $SLURM_JOB_ID"
 echo "Running on node: `hostname`"
 
 conda activate pytorch
-python train.py --name dnet169-pt-fx --feature_extractor dnet169 --pretrained --freeze_extractor > dnet169-pt-fx.out
+python train.py --name dnet169 --feature_extractor dnet169 > jobs/dnet169.out
