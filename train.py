@@ -26,7 +26,7 @@ parser.add_argument('--pretrained', dest='pretrained', action='store_true', help
 
 # Checkpoint Options
 parser.add_argument('--checkpoint', type=str, default=None, help='Start training from an existing model.')
-parser.add_argument('--name', type=str, default='dnet121-Tpt-Fx', help='A name to attach to the training session')
+parser.add_argument('--name', type=str, default='dnet121-pt-fx', help='A name to attach to the training session')
 
 args = parser.parse_args()
 
