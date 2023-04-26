@@ -1,4 +1,5 @@
 import os
+import numpy as np
 import pandas as pd
 from PIL import Image
 
@@ -8,10 +9,10 @@ from torch.utils.data import Dataset, DataLoader
 from torchvision import transforms
 
 class Dataset(Dataset):
-    def __init__(self, fp='data/train.csv', imageFolder='UTKFace'):
+    def __init__(self, data=None, datafrac=1, imageFolder='UTKFace'):
         
         self.imageFolder = imageFolder
-        self.data = pd.read_csv(fp)
+        self.data = data.sample(frac=datafrac, random_state=1).reset_index(drop=True)
         self.preprocess = transforms.Compose([
             # transforms.Resize(256),
             # transforms.CenterCrop(224),
@@ -19,8 +20,7 @@ class Dataset(Dataset):
             transforms.ToTensor(),
             transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225]),
         ])
-        self.encoded = F.one_hot(torch.as_tensor(self.data['class']), 10).to(torch.float)
-        
+        self.encoded = F.one_hot(torch.as_tensor(self.data['class'].to_numpy()), 10).to(torch.float)
         
     def __len__(self):
         return self.data.shape[0]
@@ -32,8 +32,8 @@ class Dataset(Dataset):
         age_category = self.data.loc[idx, 'age_category']
         return X, y, age_category
 
-def create_csv(args):
-    print(f"Creating test-train split with {args.datafrac} of the dataset and storing in csv")
+def create_csv():
+    print(f"Creating test-train split and storing in csv")
     age_range = 10
     bins = [x for x in range(0, 100+age_range, age_range)]
 
@@ -43,14 +43,14 @@ def create_csv(args):
     df['age'] = df.image_path.apply(lambda x: int(x.split('_')[0]))
     df['age_category'] = pd.cut(df['age'], bins=bins)
     df['class'] = df.age_category.apply(lambda x: int(bins.index(x.left)))
+    df['gender'] = df.image_path.apply(lambda x: int(x.split('_')[1]) if len(x.split('_')[1])==1 else np.nan)
+    df['ethnicity'] = df.image_path.apply(lambda x: int(x.split('_')[2]) if len(x.split('_')[2])==1 else np.nan)
     df = df.dropna()
 
     df = df.drop(df[df['class'] == 0][:2000].index, axis=0)
     df = df.drop(df[df['class'] == 2][:5700].index, axis=0)
     df = df.drop(df[df['class'] == 3][:2000].index, axis=0)
     # df = df.drop(df[df['class'] == 10].index, axis=0)
-
-    df = df.sample(frac=args.datafrac, random_state=1)
 
     train = df.sample(frac=0.8, random_state=1)
     test = df.drop(train.index)
@@ -61,10 +61,9 @@ def create_csv(args):
 
 
 def create_dataloaders(args):
-    create_csv(args)
 
-    train_set = Dataset('train.csv', imageFolder='UTKFace')
-    test_set = Dataset('test.csv', imageFolder='UTKFace')
+    train_set = Dataset(pd.read_csv('train.csv'), args.datafrac, imageFolder='UTKFace')
+    test_set = Dataset(pd.read_csv('test.csv'), args.datafrac, imageFolder='UTKFace')
 
     print(f"Train size: {len(train_set)}, Test size: {len(test_set)}")
 
@@ -74,3 +73,5 @@ def create_dataloaders(args):
     return train_loader, test_loader
 
 
+if __name__ == "__main__":
+    create_csv()

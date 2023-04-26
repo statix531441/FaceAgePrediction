@@ -1,7 +1,8 @@
 UTKFace/
+checkpoints/
 experiment.py
 UTKFace.tar.gz
-*.csv
+checkpoints.zip
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

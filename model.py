@@ -12,13 +12,15 @@ def load_history_model(args):
     history = {'loss':[],
             'train_accuracy':[],
             'test_accuracy':[]}
-    start_epoch = 1
+    start_epoch = 0
 
     if args.checkpoint:
-        state = torch.load(args.checkpoint)
+        if torch.cuda.is_available(): device = 'cuda:0'
+        else: device = 'cpu'
+        state = torch.load(args.checkpoint, map_location=torch.device(device))
         start_epoch, history, model_state_dict, optimizer_state_dict = state['epoch'], state['history'], state['model_state_dict'], state['optimizer_state_dict']
         model.load_state_dict(model_state_dict)
-        print(f"Model weights loaded from {args.checkpoint}")
+        print(f"Model weights loaded from {args.checkpoint} into {device}")
 
     return start_epoch, history, model
 

@@ -120,7 +120,7 @@ for epoch in range(start_epoch+1, args.epochs+1):
 
         test_acc /= len(test_loader.dataset)
         test_acc = test_acc.to('cpu').item()
-        print(f"test_acc: {test_acc}", end=" ")
+        print(f"test_acc: {test_acc}")
         history['test_accuracy'].append(test_acc) # transfer to cpu and extract value before appending
         
     
@@ -131,7 +131,7 @@ for epoch in range(start_epoch+1, args.epochs+1):
                'optimizer_state_dict': optimizer.state_dict()}, latest_path)
     
     # Save best model (based on test accuracy)
-    if len(history['test_accuracy'])==1 or test_acc > max(history['test_accuracy']):
+    if len(history['test_accuracy'])==1 or test_acc >= max(history['test_accuracy']):
            torch.save({'epoch': epoch,
                'history': history,
                'model_state_dict': model.state_dict(),
