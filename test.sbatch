@@ -1,6 +1,6 @@
 #!/bin/bash
 # Job name:
-#SBATCH --job-name=faceageTest
+#SBATCH --job-name=dnet121
 #
 # Wall time (e.g. "minutes", "hours:minutes:seconds", "days-hours", "days-hours:minutes"):
 #SBATCH --time=00:10:00
@@ -25,4 +25,4 @@ echo "JobID: $SLURM_JOB_ID"
 echo "Running on node: `hostname`"
 
 conda activate pytorch
-python train.py --datafrac 0.1 --epochs 5 > testout.txt
+python train.py --name dnet121-pt-fx --feature_extractor dnet121 --pretrained --freeze_extractor > testout.txt

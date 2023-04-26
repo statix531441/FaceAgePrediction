@@ -30,9 +30,11 @@ class AgePredictor(nn.Module):
         super(AgePredictor, self).__init__()
         
         if feature_extractor == 'dnet121':
-            self.features = models.densenet121(weights=models.DenseNet121_Weights.IMAGENET1K_V1).features
+            if pretrained: self.features = models.densenet121(weights=models.DenseNet121_Weights.IMAGENET1K_V1).features
+            else: self.features = models.densenet121().features
         elif feature_extractor == 'dnet169':
-            self.features = models.densenet169(weights=models.DenseNet169_Weights.IMAGENET1K_V1).features
+            if pretrained: self.features = models.densenet169(weights=models.DenseNet169_Weights.IMAGENET1K_V1).features
+            else: self.features = models.densenet169().features
         
         feature_vector_size = self.features.norm5.num_features
         

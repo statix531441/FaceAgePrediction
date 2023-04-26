@@ -16,13 +16,13 @@ parser = argparse.ArgumentParser(description='Age Prediction via Transfer Learni
 # Training Options
 parser.add_argument('--lr', type=float, default=0.001, help='Learning rate')
 parser.add_argument('--bs', type=int, default=50, help='Batch size')
-parser.add_argument('--epochs', type=int, default=100, help='Number of epochs')
+parser.add_argument('--epochs', type=int, default=200, help='Number of epochs')
 parser.add_argument('--datafrac', type=float, default=1, help='Fraction of dataset used')
-parser.add_argument('--tune_extractor', dest='tune_extractor', action='store_true', default=False, help='Tune weights of feature extractor')
+parser.add_argument('--freeze_extractor', dest='freeze_extractor', action='store_true', help='Tune weights of feature extractor')
 
 # Model Architecture Options
 parser.add_argument('--feature_extractor', type=str, default='dnet121', choices=['dnet121', 'dnet169'], help="Feature Extractor used")
-parser.add_argument('--pretrained', dest='pretrained', action='store_true', default=True, help='Load pretrained model weights')
+parser.add_argument('--pretrained', dest='pretrained', action='store_true', help='Load pretrained model weights')
 
 # Checkpoint Options
 parser.add_argument('--checkpoint', type=str, default=None, help='Start training from an existing model.')
@@ -48,12 +48,13 @@ start_epoch, history, model = load_history_model(args)
 
 criterion = nn.CrossEntropyLoss()
 
-if args.tune_extractor:
-    optimizer = torch.optim.Adam(model.parameters(), lr=args.lr)
-else:
+if args.freeze_extractor:
     for p in list(model.features.parameters()):
         p.requires_grad = False
     optimizer = torch.optim.Adam(model.classifier.parameters(), lr=args.lr)
+else:
+    optimizer = torch.optim.Adam(model.parameters(), lr=args.lr)
+
 
 
 model.to(device)
