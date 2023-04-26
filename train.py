@@ -142,3 +142,4 @@ for epoch in range(start_epoch+1, args.epochs+1):
         plt.title(k)
         plt.plot(v)
         plt.savefig(os.path.join(f"{visualization_folder}", k))
+        plt.close()
