@@ -76,7 +76,7 @@ with open(os.path.join(checkpoints_folder, 'train_args.txt'), 'w') as f:
 
 # Training
 
-for epoch in range(start_epoch, start_epoch+args.epochs):
+for epoch in range(start_epoch+1, args.epochs+1):
     train_acc = 0
     test_acc = 0
     epoch_loss = 0
