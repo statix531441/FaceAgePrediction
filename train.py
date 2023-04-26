@@ -70,8 +70,9 @@ latest_path = os.path.join(checkpoints_folder, 'latest.pt')
 with open(os.path.join(checkpoints_folder, 'train_args.txt'), 'w') as f:
     json.dump(args.__dict__, f, indent=2)
 
-
-
+visualization_folder = os.path.join('visualization', args.name)
+if not os.path.exists(visualization_folder):
+    os.makedirs(visualization_folder)
 
 
 # Training
@@ -136,13 +137,8 @@ for epoch in range(start_epoch+1, args.epochs+1):
                'model_state_dict': model.state_dict(),
                'optimizer_state_dict': optimizer.state_dict()}, best_path)
 
-
-visualization_folder = os.path.join('visualization', args.name)
-if not os.path.exists(visualization_folder):
-    os.makedirs(visualization_folder)
-
-for k, v in history.items():
-    plt.figure()
-    plt.title(k)
-    plt.plot(v)
-    plt.savefig(os.path.join(f"{visualization_folder}", k))
+    for k, v in history.items():
+        plt.figure()
+        plt.title(k)
+        plt.plot(v)
+        plt.savefig(os.path.join(f"{visualization_folder}", k))
