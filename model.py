@@ -20,7 +20,7 @@ def load_history_model(args):
         model.load_state_dict(model_state_dict)
         print(f"Model weights loaded from {args.checkpoint}")
 
-    return start_epoch+1, history, model
+    return start_epoch, history, model
 
 
 
