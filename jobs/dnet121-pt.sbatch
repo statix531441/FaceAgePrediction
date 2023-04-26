@@ -3,7 +3,7 @@
 #SBATCH --job-name=dnet121-pt
 #
 # Wall time (e.g. "minutes", "hours:minutes:seconds", "days-hours", "days-hours:minutes"):
-#SBATCH --time=04:00:00
+#SBATCH --time=05:00:00
 #
 # Mail type:
 #SBATCH --mail-type=ALL
