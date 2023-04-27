@@ -7,8 +7,8 @@ import torchvision.models as models
 
 def load_history_model(args):
     
-    model = AgePredictor(feature_extractor=args.feature_extractor, pretrained=args.pretrained)
-    print(f"Model Loaded with feature extractor={args.feature_extractor}, pretrained={args.pretrained} and freeze_extractor={args.freeze_extractor}")
+    model = AgePredictor(feature_extractor=args.feature_extractor, pretrained=args.pretrained, num_classes=args.num_classes)
+    print(f"Model Loaded with feature extractor={args.feature_extractor}, num_classes={args.num_classes}, pretrained={args.pretrained} and freeze_extractor={args.freeze_extractor}")
     history = {'loss':[],
             'train_accuracy':[],
             'test_accuracy':[]}

@@ -9,7 +9,7 @@ from torch.utils.data import Dataset, DataLoader
 from torchvision import transforms
 
 class Dataset(Dataset):
-    def __init__(self, data=None, datafrac=1, imageFolder='UTKFace'):
+    def __init__(self, data=None, num_classes=10, datafrac=1, imageFolder='UTKFace'):
         
         self.imageFolder = imageFolder
         self.data = data.sample(frac=datafrac, random_state=1).reset_index(drop=True)
@@ -20,7 +20,7 @@ class Dataset(Dataset):
             transforms.ToTensor(),
             transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225]),
         ])
-        self.encoded = F.one_hot(torch.as_tensor(self.data['class'].to_numpy()), 10).to(torch.float)
+        self.encoded = F.one_hot(torch.as_tensor(self.data['class'].to_numpy()), num_classes).to(torch.float)
         
     def __len__(self):
         return self.data.shape[0]
@@ -62,8 +62,8 @@ def create_csv():
 
 def create_dataloaders(args):
 
-    train_set = Dataset(pd.read_csv('train.csv'), args.datafrac, imageFolder='UTKFace')
-    test_set = Dataset(pd.read_csv('test.csv'), args.datafrac, imageFolder='UTKFace')
+    train_set = Dataset(pd.read_csv(os.path.join(args.csv_folder, 'train.csv')), args.num_classes, args.datafrac, imageFolder='UTKFace')
+    test_set = Dataset(pd.read_csv(os.path.join(args.csv_folder, 'test.csv')), args.num_classes, args.datafrac, imageFolder='UTKFace')
 
     print(f"Train size: {len(train_set)}, Test size: {len(test_set)}")
 

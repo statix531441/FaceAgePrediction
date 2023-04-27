@@ -19,10 +19,12 @@ parser.add_argument('--bs', type=int, default=50, help='Batch size')
 parser.add_argument('--epochs', type=int, default=200, help='Number of epochs')
 parser.add_argument('--datafrac', type=float, default=1, help='Fraction of dataset used')
 parser.add_argument('--freeze_extractor', dest='freeze_extractor', action='store_true', help='Tune weights of feature extractor')
+parser.add_argument('--csv_folder', type=str, default='.', help='Folder that contains train.csv and test.csv')
 
 # Model Architecture Options
 parser.add_argument('--feature_extractor', type=str, default='dnet121', choices=['dnet121', 'dnet169'], help="Feature Extractor used")
 parser.add_argument('--pretrained', dest='pretrained', action='store_true', help='Load pretrained model weights')
+parser.add_argument('--num_classes', type=int, default=10, help='Number of classes')
 
 # Checkpoint Options
 parser.add_argument('--checkpoint', type=str, default=None, help='Start training from an existing model.')
@@ -88,7 +90,6 @@ for epoch in range(start_epoch+1, args.epochs+1):
         
         out = model(X)
         oh = out.softmax(dim=1)
-        
         loss = criterion(oh, y)
         optimizer.zero_grad()
         loss.backward()
