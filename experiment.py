@@ -60,7 +60,7 @@ test_acc = 0
 with torch.no_grad():
     model.to(device)
     model.eval()
-    for batch_idx, (X, y, age_cat) in enumerate(test_loader):
+    for batch_idx, (X, y, age_cat) in tqdm(enumerate(test_loader), total=len(test_loader)):
         X, y = X.to(device), y.to(device)
 
         oh = model(X).softmax(dim=1)
