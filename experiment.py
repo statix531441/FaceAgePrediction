@@ -58,6 +58,7 @@ test_set = Dataset(test, num_classes=args.num_classes)
 test_loader = DataLoader(test_set, batch_size=args.bs, shuffle=False)
 test_acc = 0
 with torch.no_grad():
+    model.to(device)
     model.eval()
     for batch_idx, (X, y, age_cat) in enumerate(test_loader):
         X, y = X.to(device), y.to(device)
