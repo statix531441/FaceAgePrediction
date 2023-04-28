@@ -48,25 +48,27 @@ start_epoch, history, model = load_history_model(args)
 train = pd.read_csv(os.path.join(args.csv_folder, 'train.csv'))
 test = pd.read_csv(os.path.join(args.csv_folder, 'test.csv'))
 
-if torch.cuda.is_available(): device = 'cuda:0'
-else: device = 'cpu'
-print(f"{device} used for testing.")
+def accOn(test):
+    if torch.cuda.is_available(): device = 'cuda:0'
+    else: device = 'cpu'
+    print(f"{device} used for testing.")
 
-print(f"Test accuracy from history: {history['test_accuracy'][-1]}")
+    print(f"Test accuracy from history: {history['test_accuracy'][-1]}")
 
-test_set = Dataset(test, num_classes=args.num_classes)
-test_loader = DataLoader(test_set, batch_size=args.bs, shuffle=False)
-test_acc = 0
-with torch.no_grad():
-    model.to(device)
-    model.eval()
-    for batch_idx, (X, y, age_cat) in tqdm(enumerate(test_loader), total=len(test_loader)):
-        X, y = X.to(device), y.to(device)
+    test_set = Dataset(test, num_classes=args.num_classes)
+    test_loader = DataLoader(test_set, batch_size=args.bs, shuffle=False)
+    test_acc = 0
+    with torch.no_grad():
+        model.to(device)
+        model.eval()
+        for batch_idx, (X, y, age_cat) in tqdm(enumerate(test_loader), total=len(test_loader)):
+            X, y = X.to(device), y.to(device)
 
-        oh = model(X).softmax(dim=1)
-        test_acc += (oh.argmax(dim=1) == y.argmax(dim=1)).float().sum() 
+            oh = model(X).softmax(dim=1)
+            test_acc += (oh.argmax(dim=1) == y.argmax(dim=1)).float().sum() 
 
-    test_acc /= len(test_loader.dataset)
-    test_acc = test_acc.to('cpu').item()
+        test_acc /= len(test_loader.dataset)
+        test_acc = test_acc.to('cpu').item()
 
-print(f"Test accuracy evaluated: {test_acc}")
+    print(f"Test accuracy evaluated: {test_acc}")
+    return test_acc
